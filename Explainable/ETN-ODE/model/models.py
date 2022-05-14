@@ -317,7 +317,7 @@ class attention2_mix(nn.Module):
 
         #return c_t, qz_out
         #return mu, var
-        return c_t, qz_out, temp_weight, vari_weight
+        return tmph_cxt, qz_out, temp_weight, vari_weight
 
 
 class mv_dense(nn.Module):
