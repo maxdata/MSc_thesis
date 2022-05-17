@@ -5,6 +5,7 @@ data-science-development/
 *.csv
 *.json
 lost+found/
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

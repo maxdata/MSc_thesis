@@ -190,6 +190,8 @@ class STA_LSTM(nn.Module):
         self.lstm_hidden_dim = lstm_hidden_dim
         self.out_dim = out_dim
         self.use_gpu = use_gpu
+        
+        print(in_dim, sequence_length, lstm_in_dim, lstm_hidden_dim, out_dim)
 
         # 网络结构部分
 
@@ -217,6 +219,8 @@ class STA_LSTM(nn.Module):
         self.softmax = nn.Softmax()
 
     def forward (self,input):
+        
+        print(input.shape)
 
         # 批归一化处理输入
         out = self.batch_norm(input)
@@ -250,7 +254,9 @@ class STA_LSTM(nn.Module):
         
         total_ht = h_list[0]
         for i in range(1,len(h_list)):
-            total_ht = torch.cat((total_ht,h_list[i]),1)    
+            total_ht = torch.cat((total_ht,h_list[i]),1)   
+            
+        print(total_ht.shape)
         
         beta_t =  self.relu(self.T_A(total_ht))
         beta_t = self.softmax(beta_t)
