@@ -6,6 +6,10 @@ data-science-development/
 *.json
 lost+found/
 *.txt
+*.pt
+*.yaml
+*.wandb
+*.sql
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

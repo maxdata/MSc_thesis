@@ -14,25 +14,34 @@
            margin-bottom: 10px;
       }
       #sliders div {
-           margin-bottom: 10px;
+           margin-bottom: 0px;
            width:600px;
       }
       tr {
           padding-bottom:50px;
           width: 100px;
+          height: 50px;
       }
       td {
-          width: 100px;
           margin: 1em;
+      }
+      th {
+        width: 25%;
+        text-align: center !important;
       }
       table {
           margin-top: 1em;
-          width:50% !important;
+          width:50%;
           margin-left: auto !important;
           margin-right: auto !important;
       }
+      .dataframe {
+        table-layout: fixed;
+        width:75% !important;
+      }
       .buttonHolder {
           text-align: center;
+          margin-bottom: 2em;
       }
       .slider1 {
         background: #c2c900;
@@ -41,7 +50,7 @@
         background: #00c9c9;
       }
       .slider3 {
-        background: #28c900;
+        background: #46c900;
       }
       .slider4 {
         background: #c90000;
@@ -53,11 +62,30 @@
         background: #c97c00;
       }
       .slider7 {
-        background: #f0f0f0;
+        background: #aeaeae;
+      }
+      .slider8 {
+        background: #00cd7e;
+      }
+      .slider9 {
+        background: #6200ca;
+      }
+      .slider10 {
+        background: #000ad1;
+      }
+      .slider11 {
+        background: #410000;
+      }
+      .slider12 {
+        background: #ffb0fe;
       }
       body {
           text-align: center !important;
       }
+      .static_data {
+        width: 50% !important;
+      }
+      
       
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -67,66 +95,103 @@
     
   <body>
   <br>
-  <b>User data:</b>
+  <b>Data van de kandidaat:</b>
   <br>   
   {{dataframe | safe}}
-  <br><br>
-  <b>Model prediction: 343</b>
+  <br>
+  <b>Statische data (data die per baan niet/nauwelijks verandert):</b>
+  {{static_features | safe}}
+  <br>
+  <br>
+
+
+  <b>Voorspelling door het model: {{pred}}</b>
       
-  <p>Please indicate how important each of the following features are to you:</p>
+  <p>Geef alstublieft aan hoe belangrijk elk van de volgende eigenschappen naar uw mening zijn:</p>
   <table id = "sliders">
     <tr>
-        <th>isco code</th>
+        <th>Isco code</th>
         <th>
             <!-- insert value between >*here*</div> and add a percentage after </span>-->
             <div class="slider slider1"></div>
-            <span class="value", name="20"></span>
+            <span class="value", name="2.5"></span>
         </th>
     </tr>
     <tr>
-        <th>company name</th>
+        <th>Functie</th>
         <th>
             <div class="slider slider2"></div>
-            <span class="value", name="20"></span>
+            <span class="value", name="2.5"></span>
         </th>
     </tr>
     <tr>
-        <th>education</th>
+        <th>Bedrijf</th>
         <th>
             <div class="slider slider3"></div>
-            <span class="value", name="20"></span>
+            <span class="value", name="2.5"></span>
         </th>
       </tr>
       <tr>
-        <th>skills</th>
-
+        <th>Opleidingsniveau</th>
         <th>
             <div class="slider slider4"></div>
-            <span class="value", name="20"></span>
+            <span class="value", name="2.5"></span>
         </th>    
       </tr>
       <tr>
-        <th>Licenses</th>
-
+        <th>Dagen gewerkt</th>
         <th>
             <div class="slider slider5"></div>
-            <span class="value", name="20"></span>
+            <span class="value", name="2.5"></span>
         </th>    
       </tr>
       <tr>
-        <th>Languages</th>
-
+        <th>Werkniveau</th>
         <th>
             <div class="slider slider6"></div>
-            <span class="value", name="20"></span>
+            <span class="value", name="2.5"></span>
         </th>    
       </tr>
       <tr>
-        <th>Other stuff</th>
-
+        <th>CV</th>
         <th>
             <div class="slider slider7"></div>
-            <span class="value", name="20"></span>
+            <span class="value", name="2.5"></span>
+        </th>    
+      </tr>
+      <tr>
+        <th>Vaardigheden</th>
+        <th>
+            <div class="slider slider8"></div>
+            <span class="value", name="2.5"></span>
+        </th>    
+      </tr>
+      <tr>
+        <th>Certificaten</th>
+        <th>
+            <div class="slider slider9"></div>
+            <span class="value", name="2.5"></span>
+        </th>    
+      </tr>
+      <tr>
+        <th>Talen</th>
+        <th>
+            <div class="slider slider10"></div>
+            <span class="value", name="2.5"></span>
+        </th>    
+      </tr>
+      <tr>
+        <th>Rijbewijzen</th>
+        <th>
+            <div class="slider slider11"></div>
+            <span class="value", name="2.5"></span>
+        </th>    
+      </tr>
+      <tr>
+        <th>Postcode</th>
+        <th>
+            <div class="slider slider12"></div>
+            <span class="value", name="2.5"></span>
         </th>    
       </tr>
     </table>
@@ -146,7 +211,7 @@
             availableTotal = 100;
 
         $(this).empty().slider({
-            value: 100 / sliders.length,
+            value: 2.5,
             min: 0,
             max: 100,
             range: "max",
