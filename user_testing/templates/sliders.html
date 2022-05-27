@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Test</title>
+  <title>Recruiter testing</title>
   <meta charset="utf-8">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -105,9 +105,9 @@
   <br>
 
 
-  <b>Voorspelling door het model: {{pred}}</b>
+  Voorspelling: <b>{{pred}}</b>
       
-  <p>Geef alstublieft aan hoe belangrijk elk van de volgende eigenschappen naar uw mening zijn:</p>
+  <p>Geef aan hoe belangrijk elk onderdeel van de kandidaat is voor de voorspelling:</p>
   <table id = "sliders">
     <tr>
         <th>Isco code</th>
@@ -197,7 +197,7 @@
     </table>
       
     <div class="buttonHolder">
-        <input type="submit" value="Submit" class="btn btn-primary">
+        <input type="button" value="Submit" class="btn btn-primary">
     </div>
 
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -208,7 +208,7 @@
 
     sliders.each(function() {
         var value = parseInt($(this).text(), 10),
-            availableTotal = 100;
+            availableTotal = 200;
 
         $(this).empty().slider({
             value: 2.5,
@@ -258,7 +258,8 @@
                     contentType: 'application/json',
                     data: JSON.stringify({values: values})
                 }).done(function(data) {
-                    location.reload();
+                    window.location.replace("/show_results");
+                    return true;
                 });
             });
         });
