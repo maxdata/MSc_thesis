@@ -2,53 +2,76 @@
 <html lang="en">
 <head>
   <title>Recruiter testing</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <meta charset="utf-8">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <style>
 
       .buttonHolder {
-        float: left;
-        width: 33%;
+        width: 80%;
         text-align: center;
         box-sizing: border-box;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10%;
+      }
+
+      .form-control {
+        width: 50% !important;
+        margin-left: auto;
+        margin-right: auto;
       }
 
       .btn1 {
         padding: 4.375rem 5.75rem !important;
-        margin-top: 40%;
+        margin-top: 10%;
+        margin-left: 2%;
+      }
+      .btn-primary{
+        width: 25%;
       }
 
-      
+
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   </head>
-    
-    
+
+
   <body>
-  
+
   <div class="buttonHolder">
     <form method="post">
-      <a href="/sliders">  
-       <input type="submit" name="submit_button" value="Financiën" class="btn btn-primary btn1">
+      <label for="email" >E-mailadres:</label>
+      <input class="form-control" type="text" id="email" name="email" placeholder="Uw e-mailadres">
+
+      <a href="/sliders">
+        <input type="submit" name="submit_button" value="Financiën" class="btn btn-primary btn1">
       </a>
-    </form>
-  </div>
-  <div class="buttonHolder">
-    <form method="post">
-      <a href="/sliders">  
+      <a href="/sliders">
         <input type="submit" name="submit_button" value="Klantenservice" class="btn btn-primary btn1">
       </a>
-    </form>
-  </div>
-  <div class="buttonHolder">
-    <form method="post">
-      <a href="/sliders">  
+      <a href="/sliders">
         <input type="submit" name="submit_button" value="Gezondheidszorg" class="btn btn-primary btn1">
       </a>
     </form>
   </div>
+
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script type="text/javascript">
+
+    $("form").submit(function(e) {
+      console.log($("#email").val());
+
+        if (!$("#email").val()) {
+            alert('Geef alstublieft uw e-mailadres op.');
+            e.preventDefault();
+          }
+    });
+
+  </script>
 
 </body>
 </html>

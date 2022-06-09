@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <title>Recruiter testing</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <meta charset="utf-8">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <style>
       .buttonHolder {
@@ -16,13 +18,17 @@
           padding-bottom:50px;
           width: 100px;
           height: 50px;
+          font-size: 0.85vw;
+          vertical-align: middle !important;
       }
       td {
           margin: 1em;
+          font-size: 0.75vw;
+          vertical-align: middle !important;
       }
       th {
-        width: 25%;
-        text-align: center !important;
+          width: 25%;
+          text-align: center !important;
       }
       table {
           margin-top: 1em;
@@ -37,35 +43,73 @@
       .static_data {
         width: 50% !important;
       }
+
+      .tooltip {
+        color: rgb(51,102,187) !important;
+        opacity: 1 !important;
+        text-align: center !important;
+        position: relative !important;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 420px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+        text-align: left !important;
+        border-radius: 6px;
+        box-shadow: -1px 7px 10px black;
+        padding: 0px 8px;
+        opacity: 1 !important;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -150px;
+      }
+
+      .tooltiptext {
+        width: 15%;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-</head>    
+</head>
 <body>
-
-    <br>
+  <br>
+  <h4>Voorbeeld {{n}}/3 (uitleg)</h4>
   <b>Data van de kandidaat:</b>
-  <br>   
+  <br>
+  Baan nummers gaan van het verleden tot het heden (dus baan nummer {{max_job}} is de recentste baan).
   {{dataframe | safe}}
   <br>
   <b>Statische data (data die per baan niet/nauwelijks verandert):</b>
   {{static_features | safe}}
+  <br>
+  Voorspelling: <b>{{pred}}</b>
   <br>
   <br>
 
   <h4>Uitleg van het model:</h4>
   <br>
   <img src="{{image}}" width=45% height=60%/>
-
-  <br><br><br><br>
-
+  <br><br>
+  <!-- Definieer aandacht duidelijk... -->
+   Aandacht voor het model lijkt op aandacht voor mensen. Als het model meer aandacht toekent aan een bepaalde eigenschap/baan, <br> wil dat zeggen dat deze eigenschap/baan meer meewoog in de beslissing van het model.
+  <br><br><br>
 
   <h6>Losstaand van uw eigen verdeling, hoe interpreteerbaar vindt u de uitleg van de onderdelen van het model?</h6>
   <b>1:</b> totaal onbegrijpelijk - <b>10:</b> volkomen begrijpelijk
   <br><br>
   De aandacht per onderdeel (linksboven):
   <br>
-  <form name="rating" method="post" action="{{url_for('sliders')}}"> 
+  <form class="ratings" name="rating" method="post" action="{{url_for('sliders')}}">
     <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="topleft" id="inlineRadio1" value="option1">
         <label class="form-check-label" for="inlineRadio1">1</label>
@@ -109,7 +153,7 @@
     <br><br>
     De aandacht per baan nummer (rechtsboven):
     <br>
-    <form name="rating" method="post" action="{{url_for('sliders')}}"> 
+    <form name="rating" onsubmit="checkRadio()" method="post" action="{{url_for('sliders')}}">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="topright" id="inlineRadio1" value="option1">
             <label class="form-check-label" for="inlineRadio1">1</label>
@@ -153,7 +197,6 @@
         <br><br>
         De aandacht per baan nummer/onderdeel-combinatie (onderin):
         <br>
-        <form name="rating" method="post" action="{{url_for('sliders')}}"> 
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="bottom" id="inlineRadio1" value="option1">
                 <label class="form-check-label" for="inlineRadio1">1</label>
@@ -195,8 +238,7 @@
                 <label class="form-check-label" for="inlineRadio10">10</label>
             </div>
         <br><br><br><br>
-        <h6>Hoe nuttig zou dit model (inclusief uitleg) zijn voor het koppelen van een kandidaat aan een vacature:</h6>
-        <form name="rating" method="post" action="{{url_for('sliders')}}"> 
+        <h6>Hoe nuttig zou dit model (inclusief uitleg) zijn voor het vinden van een volgende positie voor een kandidaat:</h6>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="general" id="inlineRadio1" value="option1">
                 <label class="form-check-label" for="inlineRadio1">1</label>
@@ -240,8 +282,24 @@
         <br><br>
 
     <div class="buttonHolder">
-        <input type="submit" value="Next example" class="btn btn-primary"/>
+        <input type="submit" value="Volgend voorbeeld" class="btn btn-primary"/>
     </div>
-  </form> 
+  </form>
+
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script type="text/javascript">
+
+      $("form").submit(function(e) {
+          var checked = $("input:radio:checked");
+          var unchecked = $("input:radio");
+
+          if (checked.length != unchecked.length / 10) {
+              alert('Niet alle velden zijn ingevuld!');
+              e.preventDefault();
+            }
+      });
+
+  </script>
 
 </body>
