@@ -1,5 +1,4 @@
 # Custom
-!/hyperparameters/
 config/
 utils/
 data-science-development/
@@ -11,6 +10,7 @@ lost+found/
 *.yaml
 *.wandb
 *.sql
+!/hyperparameters/*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
