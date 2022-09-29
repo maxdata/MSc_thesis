@@ -19,11 +19,11 @@ from modelbase import STA_LSTM as Net
 # from modelbase import FCN as Net
 # from modelbase import SVM as Net
 
-'''****************************initialization*******************************''' 
+'''****************************initialization*******************************'''
 IN_DIM =  97       # 因变量 TX144，CH96，HH120
 SEQUENCE_LENGTH = 12   # 时间序列长度，即为回溯期
 
-LSTM_IN_DIM = int(IN_DIM/SEQUENCE_LENGTH)     # LSTM的input大小,等于总的变量长度/时间序列长度
+LSTM_IN_DIM = IN_DIM // SEQUENCE_LENGTH
 LSTM_HIDDEN_DIM = 300  # LSTM隐状态的大小
 
 OUT_DIM = 1            # 输出大小
@@ -42,7 +42,7 @@ VALI_PER = 0.0 # 验证集占比
 # USE_GPU = torch.cuda.is_available()
 USE_GPU = False
 
-'''****************************data prepration*******************************''' 
+'''****************************data prepration*******************************'''
 # 准备好训练和测试数据
 dp = data_preprocess(file_path = 'data.csv', train_per = TRAIN_PER, vali_per = VALI_PER, in_dim = IN_DIM)
 
@@ -78,7 +78,7 @@ test_dataloader = torch.utils.data.DataLoader(test_data_trans,
 # print('测试集准备完毕')
 
 
-'''****************************model prepration*******************************''' 
+'''****************************model prepration*******************************'''
 # 将网络参数导入网络
 net = Net(IN_DIM,SEQUENCE_LENGTH,LSTM_IN_DIM,LSTM_HIDDEN_DIM,OUT_DIM,USE_GPU)
 # print('网络模型准备完毕')
@@ -87,10 +87,6 @@ net = Net(IN_DIM,SEQUENCE_LENGTH,LSTM_IN_DIM,LSTM_HIDDEN_DIM,OUT_DIM,USE_GPU)
 if USE_GPU:
     net = net.cuda()
     # print('本次实验使用GPU加速')
-else:
-    pass
-    # print('本次实验不使用GPU加速')
-
 # 使用SGD（随机梯度下降）优化，学习率为0.001，动量为0.9
 # optimizer = optim.SGD(net.parameters(), lr= LEARNING_RATE, momentum=0.9) 
 # 根据梯度调整参数数值，Adam算法
@@ -112,19 +108,18 @@ def train(verbose = False):
     net.train()
     loss_list = []
 
-    for i,data in enumerate(train_dataloader):
-       
+    for data in train_dataloader:
         inputs = data['inputs']
         groundtruths = data['groundtruths']     
-        
+
         if USE_GPU:
             inputs = Variable(inputs).cuda()
             groundtruths = Variable(groundtruths).cuda()
-            
+
         else:
             inputs = Variable(inputs)
             groundtruths = Variable(groundtruths)
-        
+
         #将参数的grad值初始化为0
         optimizer.zero_grad()
 
@@ -138,7 +133,7 @@ def train(verbose = False):
         loss.backward()
         optimizer.step()
         loss_list.append(loss.item())
-      
+
     return loss_list
 
 
@@ -151,18 +146,17 @@ def test():
     # 告诉网络进行测试，不再是训练模式
     net.eval() 
 
-    for i,data in enumerate(test_dataloader):
-
+    for data in test_dataloader:
         inputs = data['inputs']
         groundtruths = data['groundtruths']     
-        
+
         if USE_GPU:
 
             inputs = Variable(inputs).cuda()
             groundtruths = Variable(groundtruths).cuda()
-            
+
         else:
-            
+
             inputs = Variable(inputs)
             groundtruths = Variable(groundtruths)
 
@@ -172,13 +166,13 @@ def test():
         if USE_GPU:
             predictions.extend(out.cpu().data.numpy().tolist())
             test_groundtruths.extend(groundtruths.cpu().data.numpy().tolist())
-            
+
         else:
             predictions.extend(out.data.numpy().tolist())
             test_groundtruths.extend(groundtruths.data.numpy().tolist())
-      
+
     average_error = np.sqrt(error/len(test_data_trans))
-    
+
     return np.array(predictions).reshape((len(predictions))),np.array(test_groundtruths).reshape((len(test_groundtruths))),average_error
 
 def main():
@@ -186,35 +180,35 @@ def main():
     #记录程序开始的时间
     train_start = time.time()
     loss_recorder = []
-    
+
     print('starting training... ')
 
     for epoch in range(EPOCHES):
 
         # adjust learning rate
         adjust_lr.step()
-        
+
         loss_list = train(verbose= True)
-        
+
         loss_recorder.append(np.mean(loss_list))
-        
+
         print('epoch = %d,loss = %.5f'%(epoch+1,np.mean(loss_list)))
-    
-    print ('training time = {}s'.format(int((time.time() - train_start))))
-    
+
+    print(f'training time = {int(time.time() - train_start)}s')
+
     # 记录测试开始的时间
     test_start = time.time()
     predictions, test_groundtruth, average_error = test()
 
     print(predictions.shape)
     print(test_groundtruth.shape)
-    
-    print('test time = {}s'.format(int((time.time() - test_start)+1.0)))
+
+    print(f'test time = {int(time.time() - test_start + 1.0)}s')
     print('average error = ',  average_error)
 
     result = pd.DataFrame(data = {'Q(t+1)':predictions,'Q(t+1)truth':test_groundtruth})
     result.to_csv('./data/output/out_t+1.csv')
-    
+
     torch.save(net,'./models/sta_lstm_t+1.pth')
 
 if __name__ == '__main__':

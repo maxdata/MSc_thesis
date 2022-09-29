@@ -19,18 +19,16 @@ class data_preprocess(object):
     # 读取csv文件的值
     def load_data(self):
         
-        raw_data = pd.read_csv(self.file_path).values
-        
         # print('raw_data.shape = ',raw_data.shape)
 
-        return raw_data
+        return pd.read_csv(self.file_path).values
     
     # split_data方法将数据分割为训练、验证与测试数据，每类数据包含因变量和真值
-    def  split_data(self, raw_data = None, _type = 'linear' ):
+    def split_data(self, raw_data = None, _type = 'linear' ):
         
         length = len(raw_data)
         # print('数据集总量:{}'.format(length))
-        
+
         train_set_size = int(length*self.train_per)
         vali_set_size = int(length*self.vali_per)
 
@@ -39,7 +37,7 @@ class data_preprocess(object):
         # print('训练集数量:{}'.format(train_set_size),'\n验证集数量:{}'.format(vali_set_size),'\n测试集数量:{}'.format(test_set_size))
         # print('训练集占比:{}%'.format(self.train_per*100),'\n验证集占比:{}%'.format(self.vali_per*100),'\n测试集占比:{}%'.format((1-self.train_per-self.vali_per)*100))  
 
-        
+
         if _type == 'linear':
 
             train_data = raw_data[:train_set_size, :self.in_dim]
@@ -49,10 +47,6 @@ class data_preprocess(object):
             train_groundtruth = raw_data[:train_set_size, self.in_dim:]
             vali_groundtruth = raw_data[train_set_size: train_set_size+vali_set_size, self.in_dim:]
             test_groundtruth = raw_data[train_set_size + vali_set_size:, self.in_dim:]
-        else:
-
-            pass
-
         return (train_data,train_groundtruth),(vali_data,vali_groundtruth),(test_data,test_groundtruth)
 
     
@@ -81,16 +75,16 @@ class data_trans(Dataset):
         return len(self.data)
 
     def __getitem__(self,index):
-               
+
         inputs = self.data[index,:]
         groundtruths = self.groundtruth[index,:]
-        
+
         #将数据从numpy.array转换为tensor类型       
         if self.transform:
-                        
+
             inputs = torch.from_numpy(inputs).float()
             groundtruths = torch.from_numpy(groundtruths).float()
-                       
+
         return {'inputs':inputs,'groundtruths':groundtruths}
 
 def main():

@@ -412,13 +412,13 @@ def main():
 
     batch_norm = nn.BatchNorm1d(in_dim)
     in_linear = nn.Linear(in_dim, in_dim)
-    
+
     out = batch_norm(input)
     print(out.size())
 
     out = in_linear(out)
     print(out.size())
-    
+
     h = torch.zeros(batch_size, lstm_hidden_dim)
     c = torch.zeros(batch_size, lstm_hidden_dim) # batch,hideden_size
 
